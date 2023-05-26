@@ -1,103 +1,86 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-
-namespace HabibaKhatun_NEA.classes
+namespace NEA.classes
 {
     public class UserManager
     {
-        private static readonly string connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString; // from web.config file
-
-        public static DataTable GetUserDataById(int userID)
+        private static readonly string connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+        public static DataTable GetUserDataById(int userId)
+public int GetUserId(string username, string password)
+{
+    int userId = 0;
+    string query = "SELECT UserId FROM UsersTbl WHERE Username = @Username";
+    try
+    {
+        using (SqlConnection connection = new SqlConnection(connectionString))
         {
-            using (SqlConnection sqlConn = new SqlConnection(connectionString))
+            using (SqlCommand command = new SqlCommand(query, connection))
             {
-                sqlConn.Open();
-                SqlDataAdapter sqlDa = new SqlDataAdapter("View_User_By_ID", sqlConn);
-                sqlDa.SelectCommand.CommandType = CommandType.StoredProcedure;
-                sqlDa.SelectCommand.Parameters.AddWithValue("@UserId", userID);
-                DataTable dtbl = new DataTable();
-                sqlDa.Fill(dtbl);
-                return dtbl;
-            }
-        }
-
-        public int GetUserId(string username, string password) // method to get UserId
-        {
-            int userId = 0;
-            string query = "SELECT UserId FROM UsersTbl WHERE Username = @Username";
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Username", username);
-                    connection.Open();
-                    using (SqlDataReader reader = command.ExecuteReader())
+                command.Parameters.AddWithValue("@Username", username);
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {   
+          // If the reader returns a row, get the user ID from the first column of the result set.
+                    if (reader.Read())
                     {
-                        if (reader.Read())
-                        {
-                            userId = reader.GetInt32(0);
-                        }
+                        userId = reader.GetInt32(0);
                     }
                 }
             }
-            return userId;
         }
-
-        public static int GetInvoiceId()
-        {
-            int invoiceId = 0;
-            using (SqlConnection con = new SqlConnection(connectionString))
-            {
-                // Opens the database connection
-                con.Open();
-
-                // Creates a SqlCommand object with  SQL query
-                SqlCommand cmd = new SqlCommand("SELECT MAX(InvoiceId) FROM InvoicesTbl;", con); 
-
-                // Executes the query and retrieve the invoiceId value
-                invoiceId = (int)cmd.ExecuteScalar();
-
-                // Increments the invoiceId value to get the next invoice number
-                invoiceId++;
-
-                // then used on the generated pdf... 
-
+    }
+    catch (SqlException ex)
+    {
+throw;
+          }
+    catch (Exception ex)
+    {
+throw;
             }
-            return invoiceId;
+    return userId;
+}
 
-        }
-        public string GetUserType(int userId)
+   public static int GetInvoiceId()
+{
+    int invoiceId = 0;
+    try
+    {
+        using (SqlConnection con = new SqlConnection(connectionString))
         {
-            string employeeType = null;
+            // Opens the database connection
+            con.Open();
 
-            // create a connection to the database
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            // Creates a SqlCommand object with SQL query
+string query = "SELECT MAX(InvoiceId) FROM InvoicesTbl";
+            using(SqlCommand cmd = new SqlCommand(query, con))
+{
+
+            // Executes the query and retrieve the invoiceId value
+            object result = cmd.ExecuteScalar();
+            if (result != null && result != DBNull.Value)
             {
-                // create a command to select the employee type from the database
-                string sql = "SELECT Type FROM UsersTbl WHERE UserId = @UserId";
-                SqlCommand command = new SqlCommand(sql, connection);
-                command.Parameters.AddWithValue("@UserId", userId);
-
-                // open the database connection and execute the command
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                // if a row was returned, retrieve the employee type from the reader
-                if (reader.Read())
-                {
-                    employeeType = reader.GetString(0);
-                }
-
-                // close the reader and connection
-                reader.Close();
-                connection.Close();
+                invoiceId = (int)result;
             }
 
-            return employeeType;
+            // Increments the invoiceId value to get the next invoice number
+            invoiceId++;
+}
         }
-
-        public bool UserExists(string username)
+    }
+    catch (SqlException ex)
+    {
+        // Handle the exception by displaying an error message
+        //re-throw the exception to be handled by the calling method
+        throw;
+    }
+    catch (Exception ex)
+    {
+     throw;
+    }
+    return invoiceId;
+}
+ public bool UserExists(string username)
         {
             bool exists = false;
 
@@ -122,8 +105,7 @@ namespace HabibaKhatun_NEA.classes
         }
 
 
-
-
-
     }
+    
 }
+
