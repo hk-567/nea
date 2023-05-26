@@ -1,6 +1,6 @@
 using System;
 using System.Data.SqlClient;
-namespace HabibaKhatun_NEA.classes
+namespace NEA.classes
 {
 public class ClientRepository
     {
