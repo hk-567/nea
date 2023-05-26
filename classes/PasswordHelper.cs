@@ -3,7 +3,7 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.Diagnostics;
 
-namespace HabibaKhatun_NEA.classes
+namespace NEA.classes
 {
     public class PasswordHelper
     {
