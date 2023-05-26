@@ -5,28 +5,30 @@ namespace NEA.classes
 {
     public class Service
     {
-        public Dictionary<string, decimal[]> Rates { get; set; }
+        // Define properties to store rates, DataTable, and employee type.
+        public Dictionary<string, decimal>[] Rates { get; set; }
         public DataTable dt { get; set; }
         public string EmployeeType { get; set; }
 
+        // Constructor to initialise rates and DataTable.
         public Service()
         {
-            Rates = new Dictionary<string, decimal[]>(); // services and their rates used for the invoice
+            // Initialize rates for different legal services.
+            Rates = new Dictionary<string, decimal[]>();
             Rates.Add("Attorney Fee", new decimal[] { 8000m, 10000m }); // junior rate, senior rate
-            Rates.Add("Documentary Stamp", new decimal[] { 1500m, 2000m });
-            Rates.Add("Legal Counselling", new decimal[] { 4000m, 5000m });
-            Rates.Add("Civil Litigation", new decimal[] { 75m, 93m });
-            Rates.Add("Patent Application", new decimal[] { 12000m, 15000m });
-            Rates.Add("Real Estate Title Search", new decimal[] { 2500m, 3500m });
-            Rates.Add("Business Formation", new decimal[] { 5000m, 7500m });
-            Rates.Add("Immigration Petition", new decimal[] { 6000m, 9000m });
-            Rates.Add("Estate Planning", new decimal[] { 4500m, 6500m });
-            Rates.Add("Trademark Registration", new decimal[] { 7000m, 9000m });
-            Rates.Add("Employment Agreement", new decimal[] { 3000m, 4000m });
-            Rates.Add("Arbitration", new decimal[] { 80m, 100m });
+            // more rates added here...
             Rates.Add("Mediation", new decimal[] { 100m, 120m });
-        }
 
+            // Initialize DataTable with appropriate columns.
+            dt = new DataTable();
+            dt.Columns.Add(new DataColumn("No", typeof(int)));
+            dt.Columns.Add(new DataColumn("Service", typeof(string)));
+            dt.Columns.Add(new DataColumn("Description", typeof(string)));
+            dt.Columns.Add(new DataColumn("Hourly Rate", typeof(decimal)));
+            dt.Columns.Add(new DataColumn("Quantity", typeof(int)));
+            dt.Columns.Add(new DataColumn("Amount", typeof(decimal)));
+        }
+        // Gets the rate for a given service name and employee type
         public decimal GetRate(string serviceName)
         {
             decimal[] rates = Rates[serviceName];
@@ -40,5 +42,5 @@ namespace NEA.classes
             }
         }
     }
-
 }
+
