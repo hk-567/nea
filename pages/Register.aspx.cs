@@ -5,7 +5,7 @@ using System.Data;
 using System.Configuration;
 using System.Net;
 using System.Net.Mail;
-using HabibaKhatun_NEA.classes;
+using NEA.classes;
 
 namespace NEA
 {
